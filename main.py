@@ -2,7 +2,7 @@ import math
 
 func = lambda x: math.sin(x) * x ** 3
 
-a0, b0 = -3, -3
+a0, b0 = -7, -3
 
 e = 0.01
 
