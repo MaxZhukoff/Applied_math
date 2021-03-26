@@ -39,7 +39,7 @@ def fibonacci_default(number):
     return (1 / math.sqrt(5)) * (((1 + math.sqrt(5)) / 2) ** number - ((1 - math.sqrt(5)) / 2) ** number)
 
 
-def fibonacci_main(a0, b0):
+def fibonacci_method(a0, b0):
     iterations = 0
     while ((b0 - a0) / epsilon) >= fibonacci_default(iterations + 2):
         iterations += 1
@@ -62,4 +62,4 @@ def fibonacci_main(a0, b0):
 
 print(dichotomy_method(-13, -1))
 print(golden_ratio_method(-13, -1))
-print(fibonacci_main(-13, -1))
+print(fibonacci_method(-13, -1))
