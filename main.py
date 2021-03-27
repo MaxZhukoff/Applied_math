@@ -28,16 +28,22 @@ def dichotomy(a, b):
 def golden_ratio_method(a, b):
     x1 = a + ((3 - math.sqrt(5)) / 2) * (b - a)
     x2 = b - ((3 - math.sqrt(5)) / 2) * (b - a)
+    fx1 = f(x1)
+    fx2 = f(x2)
     iterations = 0
     while (b - a) / 2 >= epsilon:
-        if f(x1) > f(x2):
+        if fx1 > fx2:
             a = x1
             x1 = x2
-            x2 = b - (x1 - a)
-        elif f(x1) < f(x2):
+            x2 = a + ((math.sqrt(5) - 1) / 2) * (b - a)
+            fx1 = fx2
+            fx2 = f(x2)
+        elif fx1 < fx2:
             b = x2
             x2 = x1
-            x1 = a + (b - x2)
+            x1 = a + (1 - ((math.sqrt(5) - 1) / 2)) * (b - a)
+            fx2 = fx1
+            fx1 = f(x1)
         iterations += 1
     print(iterations)
     return (a + b) / 2, f((a + b) / 2)
@@ -143,7 +149,7 @@ def combined_brent_method(a, c):
             elif fu <= fv or x == v or w == v:
                 v = u
                 fv = fu
-    return x, fx
+    return x, f(x)
 
 
 print("Dichotomy (x;y): ", dichotomy(a, b))
