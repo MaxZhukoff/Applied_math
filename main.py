@@ -11,11 +11,11 @@ def dichotomy(a, b):
     iterations = math.log((b - a) / epsilon) / math.log(2)
     print(iterations)
     iterations = 0
-    d = 0.1 * (epsilon / 2)
+    delta = 0.1 * (epsilon / 2)
     while (b - a) / 2 >= epsilon:
         x = (a + b) / 2
-        x1 = x - d
-        x2 = x + d
+        x1 = x - delta
+        x2 = x + delta
         if f(x1) > f(x2):
             a = x1
         else:
