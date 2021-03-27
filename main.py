@@ -55,7 +55,6 @@ def fibonacci_method(a, b):
     fibonacci_def_plus_n = fibonacci_default(iterations + 1)
     fibonacci_def_plus_2n = fibonacci_default(iterations + 2)
     while (b - a) / 2 >= epsilon:
-        iterations -= 1
         x1 = a + (fibonacci_def_n / fibonacci_def_plus_2n) * (b - a)
         x2 = a + (fibonacci_def_plus_n / fibonacci_def_plus_2n) * (b - a)
         if f(x1) > f(x2):
