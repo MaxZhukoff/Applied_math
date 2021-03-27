@@ -18,7 +18,7 @@ def dichotomy(a, b):
         x2 = x + delta
         if f(x1) > f(x2):
             a = x1
-        else:
+        elif f(x1) < f(x2):
             b = x2
         iterations += 1
     print(iterations)
@@ -60,13 +60,23 @@ def fibonacci_method(a, b):
     fibonacci_def_n = fibonacci_default(iterations)
     fibonacci_def_plus_n = fibonacci_default(iterations + 1)
     fibonacci_def_plus_2n = fibonacci_default(iterations + 2)
+    x1 = a + (fibonacci_def_n / fibonacci_def_plus_2n) * (b - a)
+    x2 = a + (fibonacci_def_plus_n / fibonacci_def_plus_2n) * (b - a)
+    fx1 = f(x1)
+    fx2 = f(x2)
     while (b - a) / 2 >= epsilon:
-        x1 = a + (fibonacci_def_n / fibonacci_def_plus_2n) * (b - a)
-        x2 = a + (fibonacci_def_plus_n / fibonacci_def_plus_2n) * (b - a)
-        if f(x1) > f(x2):
+        if fx1 > fx2:
             a = x1
-        elif f(x1) < f(x2):
+            x1 = x2
+            x2 = a + (fibonacci_def_plus_n / fibonacci_def_plus_2n) * (b - a)
+            fx1 = fx2
+            fx2 = f(x2)
+        elif fx1 < fx2:
             b = x2
+            x2 = x1
+            x1 = a + (fibonacci_def_n / fibonacci_def_plus_2n) * (b - a)
+            fx2 = fx1
+            fx1 = f(x1)
     return (a + b) / 2, f((a + b) / 2)
 
 
