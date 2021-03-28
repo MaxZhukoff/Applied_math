@@ -65,6 +65,8 @@ def fibonacci_method(a, b):
     fx1 = f(x1)
     fx2 = f(x2)
     while (b - a) / 2 >= epsilon:
+        x1 = a + (fibonacci_def_n / fibonacci_def_plus_2n) * (b - a)
+        x2 = a + (fibonacci_def_plus_n / fibonacci_def_plus_2n) * (b - a)
         if fx1 > fx2:
             a = x1
             x1 = x2
@@ -95,7 +97,7 @@ def parabola_method(a, b):
         if u < x2:
             left, fl = u, fu
             right, fr = x2, f2
-        else:
+        elif u > x2:
             left, fl = x2, f2
             right, fr = u, fu
         if fl < fr:
