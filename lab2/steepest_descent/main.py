@@ -68,7 +68,7 @@ def steepest_descent(f, a, b, epsilon):
         alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 0.001)
         # print(next_step(x, alpha))
         next_x = next_step(curr_x, alpha)
-        if np.absolute(math.sqrt(length_grad(next_x) - length_grad(curr_x))) <= epsilon:
+        if (math.sqrt(np.absolute(length_grad(next_x) - length_grad(curr_x)))) <= epsilon:
             print(next_x, iter)
             break
         print(next_x)
