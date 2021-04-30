@@ -2,10 +2,17 @@ import math
 import numpy as np
 from one_dimensional_methods import *
 from sympy import diff, symbols, false
+import random
 
-x, y = symbols('x y')
-variables = (x, y)
-f = lambda variables: 3 / 2 * (x - y) ** 2 + 1 / 3 * (x + y) ** 2 + 1
+variables = symbols('x y')
+f = lambda variables: 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
+
+
+def init():
+    x0 = np.array([], dtype=int)
+    for i in range(0, len(variables)):
+        x0 = np.append(x0, [random.randint(-3, 3)])
+    return x0
 
 
 def value(values):
@@ -40,8 +47,8 @@ def gradient(point):
 
 def length_grad(grad):
     length = 0
-    for i in range(len(x)):
-        length += grad[i]**2
+    for i in range(len(x0)):
+        length += grad[i] ** 2
     return length
 
 
@@ -62,7 +69,8 @@ def gradientDescent(xPrev):
 
 
 def next_step(curr_x, alpha):
-    return (curr_x - alpha * gradient(curr_x))
+    return curr_x - alpha * gradient(curr_x)
+
 
 def steepest_descent(point, epsilon):
     curr_x = point
@@ -72,17 +80,13 @@ def steepest_descent(point, epsilon):
         alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 0.001)
         next_x = next_step(curr_x, alpha)
         if (math.sqrt(np.absolute(length_grad(next_x) - length_grad(curr_x)))) <= epsilon:
-            print(next_x, it)
             break
-        print(next_x)
         curr_x = next_x
     return next_x, f(next_x)
 
-# point1 = np.array([2, 3])
-# print(gradient(point1))
-# val = np.array([2, 3])
-# print(value(val))
 
-x0 = np.array([3, 1])
-# gradientDescent(x0)
-steepest_descent(x0, 0.001)
+
+
+x0 = init()
+gradientDescent(x0)
+print(steepest_descent(x0, 0.001))
