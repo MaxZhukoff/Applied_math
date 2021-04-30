@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from one_dimensional_methods import *
 from sympy import diff, symbols, false
 
 x, y = symbols('x y')
@@ -37,25 +38,51 @@ def gradient(point):
     return grad
 
 
+def length_grad(grad):
+    length = 0
+    for i in range(len(x)):
+        length += grad[i]**2
+    return length
+
+
 def gradientDescent(xPrev):
     xNew = np.array([])
-    e = 0.01
-    a = 0.1
+    epsilon = 0.01
+    alpha = 0.1
     it = 0
     while True:
         it += 1
-        xNew = xPrev - a * gradient(xPrev)
+        xNew = xPrev - alpha * gradient(xPrev)
+        # alpha /= 1.5
         # if math.fabs(value(xNew) - value(xPrev)) <= e or all(np.absolute(xNew - xPrev) <= e):
-        if all(np.absolute(xNew - xPrev) <= e):
+        if math.fabs(value(xNew) - value(xPrev)) <= epsilon:
             break
         xPrev = xNew
     print(value(xNew), it)
 
+
+def next_step(curr_x, alpha):
+    return (curr_x - alpha * gradient(curr_x))
+
+def steepest_descent(point, epsilon):
+    curr_x = point
+    it = 0
+    while True:
+        it += 1
+        alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 0.001)
+        next_x = next_step(curr_x, alpha)
+        if (math.sqrt(np.absolute(length_grad(next_x) - length_grad(curr_x)))) <= epsilon:
+            print(next_x, it)
+            break
+        print(next_x)
+        curr_x = next_x
+    return next_x, f(next_x)
 
 # point1 = np.array([2, 3])
 # print(gradient(point1))
 # val = np.array([2, 3])
 # print(value(val))
 
-x0 = np.array([1.7, 2.5])
-gradientDescent(x0)
+x0 = np.array([3, 1])
+# gradientDescent(x0)
+steepest_descent(x0, 0.001)
