@@ -1,20 +1,18 @@
 import math
 import numpy as np
+from one_dimensional_methods import *
 from sympy import diff, symbols, false
+import random
 
-x, y = symbols('x y')
-variables = (x, y)
-f = lambda variables: 3 / 2 * (x - y) ** 2 + 1 / 3 * (x + y) ** 2 + 1
+variables = symbols('x y')
+f = lambda variables: 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
+epsilon = 0.01
 
-
-def value(values):
-    if len(values) != len(variables) or len(values) < 1:
-        return false
-    funcValue = f(values)
-    replacements = []
-    for i in range(len(values)):
-        replacements += [(variables[i], values[i])]
-    return funcValue.subs(replacements)
+def init():
+    x0 = np.array([], dtype=int)
+    for i in range(0, len(variables)):
+        x0 = np.append(x0, [random.randint(-30, 30)])
+    return x0
 
 
 def differentiation(var, point):
@@ -37,25 +35,63 @@ def gradient(point):
     return grad
 
 
-def gradientDescent(xPrev):
-    xNew = np.array([])
-    e = 0.01
-    a = 0.1
+def length_grad(grad):
+    length = 0
+    for i in range(len(x0)):
+        length += grad[i] ** 2
+    return length
+
+
+def gradientDescent(curr_x):
+    alpha = 0.1
     it = 0
     while True:
         it += 1
-        xNew = xPrev - a * gradient(xPrev)
-        # if math.fabs(value(xNew) - value(xPrev)) <= e or all(np.absolute(xNew - xPrev) <= e):
-        if all(np.absolute(xNew - xPrev) <= e):
+        next_x = curr_x - alpha * gradient(curr_x)
+        # if math.fabs(value(next_x) - value(curr_x)) <= e or all(np.absolute(next_x - curr_x) <= e):
+        if math.fabs(f(next_x) - f(curr_x)) <= epsilon:
             break
-        xPrev = xNew
-    print(value(xNew), it)
+        curr_x = next_x
+    return f(next_x), it
 
 
-# point1 = np.array([2, 3])
-# print(gradient(point1))
-# val = np.array([2, 3])
-# print(value(val))
+def step_split_gradient_descent(curr_x):
+    alpha = 1
+    delta = 0.5
+    it = 0
+    while True:
+        it += 1
+        next_x = curr_x - alpha * gradient(curr_x)
+        if f(curr_x - alpha * gradient(curr_x)) <= f(curr_x) - epsilon * alpha * math.fabs(length_grad(curr_x)):
+            if math.fabs(f(next_x) - f(curr_x)) <= epsilon:
+                break
+            curr_x = next_x
+        else:
+            while f(curr_x - alpha * gradient(curr_x)) > f(curr_x):
+                alpha *= delta
+    return f(next_x), it
 
-x0 = np.array([1.7, 2.5])
-gradientDescent(x0)
+
+def next_step(curr_x, alpha):
+    return curr_x - alpha * gradient(curr_x)
+
+
+def steepest_descent(point):
+    curr_x = point
+    it = 0
+    while True:
+        it += 1
+        alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 0.001)
+        next_x = next_step(curr_x, alpha)
+        if (math.sqrt(np.absolute(length_grad(next_x) - length_grad(curr_x)))) <= epsilon:
+            break
+        curr_x = next_x
+    return f(next_x), it
+
+
+point1 = np.array([2, 3])
+x0 = init()
+print(x0)
+print("Gradient descent:", gradientDescent(x0))
+print("Steepest descent:", steepest_descent(x0))
+print(step_split_gradient_descent(x0))
