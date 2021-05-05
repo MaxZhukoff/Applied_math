@@ -7,8 +7,9 @@ import random
 variables = symbols('x y')
 
 f = lambda variables: 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
+# 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
 # 3/2*(x-y)^2 + 1/3*(x+y)^2+1
-epsilon = 0.001
+epsilon = 0.01
 
 
 def init():
@@ -123,7 +124,7 @@ def grad_to_matrix(grad):
     return matrix_grad
 
 
-def conjugate_directions(point):
+def conjugate_directions(point):  # Powell's method
     p1 = np.array([1, 0])
     p2 = np.array([0, 1])
     x0 = point
@@ -134,26 +135,49 @@ def conjugate_directions(point):
         x1 = x0 + h * p2
         hr = solve(diff(f(x1), h), h)[0]
         x1 = x0 + hr * p2
-
         x2 = x1 + h * p1
         hr = solve(diff(f(x2), h), h)[0]
         x2 = x1 + hr * p1
-
         x3 = x2 + h * p2
         hr = solve(diff(f(x3), h), h)[0]
         x3 = x2 + hr * p2
-
         p2 = x3 - x1
         x0 = x3
         if math.sqrt(np.absolute(length_grad(gradient(x3)))) < epsilon:
             return f(x3), it
 
 
+def hessian(point):
+    size = (len(variables))
+    matrix = np.eye(size)
+    for i in range(size):
+        for j in range(size):
+            dx1 = lambda variables: diff(f(variables), variables[i])
+            dx2 = diff(dx1(variables), variables[j])
+            matrix[i][j] = dx2
+    return matrix
+
+
+def newton(point):
+    curr_x = point
+    it = 0
+    while True:
+        it += 1
+        next_x = curr_x.reshape(-1, 1) - np.dot(np.linalg.inv(hessian(curr_x)), gradient(curr_x).reshape(-1, 1))
+        vec_length = 0
+        for i in range(len(next_x)):
+            vec_length += next_x[i] ** 2
+        if math.sqrt(vec_length) < epsilon:
+            break
+    return f(next_x)[0], it
+
+
 x0 = init()
-# x0 = np.array([-1, 1])
+# x0 = np.array([1, 1])
 print(x0)
 print("Gradient descent:", gradient_descent(x0))
 print("Steepest descent:", steepest_descent(x0))
 print("Gradient descent second: ", step_split_gradient_descent(x0))
 print("Conjugate gradient method: ", conjugate_gradient(x0))
 print("Conjugate directions method: ", conjugate_directions(x0))
+print("Newton method: ", newton(x0))
