@@ -6,7 +6,7 @@ import random
 
 variables = symbols('x y')
 
-f = lambda variables: (variables[0] + 2 * variables[1] - 7) ** 2 + (2 * variables[0] + variables[1] - 5) ** 2
+f = lambda variables: 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
 # 3 / 2 * (variables[0] - variables[1]) ** 2 + 1 / 3 * (variables[0] + variables[1]) ** 2 + 1
 # 3/2*(x-y)^2 + 1/3*(x+y)^2+1
 epsilon = 0.01
@@ -104,7 +104,7 @@ def conjugate_gradient(point):
         it += 1
         if k == 0:
             p = -1 * gradient(curr_x)
-        alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 0.1)
+        alpha = golden_ratio_method(lambda alp: f(next_step(curr_x, alp)), -1, 1, 1)
         next_x = curr_x + alpha * p
         if math.sqrt(np.absolute(length_grad(gradient(next_x)))) < epsilon:
             return f(next_x), it
@@ -179,8 +179,8 @@ def newton(point):
     return f(curr_x), it
 
 
-# x0 = init()
-x0 = np.array([-1, 1])
+x0 = init()
+# x0 = np.array([-1, 1])
 print(x0)
 print("Gradient descent:", gradient_descent(x0))
 print("Steepest descent:", steepest_descent(x0))
