@@ -8,7 +8,9 @@ from scipy import stats
 # epsilon = 0.01
 # x = np.array([0, 0])
 
-n = 50
+n = 1000
+
+denst = 0.1
 
 
 b = np.zeros(n)
@@ -25,7 +27,7 @@ def init():
     # square_matrix = np.array([[10, -1, 2, 0], [-1, 11, -1, 3], [2, -1, 10, -1], [0, 3 , -1 , 8 ]])
     # matrix = csr_matrix(square_matrix).toarray()
     rvs = stats.poisson(10, loc=10).rvs
-    matrix = random(n, n, density=0.25, data_rvs=rvs, format="csr", dtype=float).toarray()
+    matrix = random(n, n, density=denst, data_rvs=rvs, format="csr", dtype=float).toarray()
     for i in range(n):
         diag_max = 0
         for j in range(n):
@@ -125,7 +127,7 @@ def jacobi(A, b, x, epsilon):
 def init_cond_matrix(k):
     # matrix = np.random.randint(-5, 1, n ** 2).reshape(-1, n)
     rvs = stats.poisson(10, loc=10).rvs
-    matrix = random(k, k, density=0.35, data_rvs=rvs, format="csr").toarray()
+    matrix = random(k, k, density=denst, data_rvs=rvs, format="csr").toarray()
     for i in range(k):
         for j in range(k):
             if i == j:
