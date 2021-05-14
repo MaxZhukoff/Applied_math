@@ -55,6 +55,7 @@ def LU_decomposition(matrix):
                 for l in range(i):
                     sigmaL += L[j][l] * U[l, i]
                 L[j][i] = (matrix[j][i] - sigmaL) / U[i][i]
+            print(i, j, U[i][j], L[i][j])
     print("LU iterations: ", it)
     return L, U
 
