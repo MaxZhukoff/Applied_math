@@ -191,3 +191,37 @@ print("Gradient descent second: ", step_split_gradient_descent(x0))
 print("Conjugate gradient method: ", conjugate_gradient(x0))
 print("Conjugate directions method: ", conjugate_directions(x0))
 print("Newton method: ", newton(x0))
+
+n = 2
+cond_P = 70
+log_cond_P = np.log(cond_P)
+exp_vec = np.arange(-log_cond_P/4., log_cond_P * (n + 1)/(4 * (n - 1)), log_cond_P/(2.*(n-1)))
+s = np.exp(exp_vec)
+S = np.diag(s)
+U, _ = np.linalg.qr((np.random.rand(n, n) - 5.) * 200)
+V, _ = np.linalg.qr((np.random.rand(n, n) - 5.) * 200)
+P = U.dot(S).dot(V.T)
+matrix = P.dot(P.T)
+
+k = np.linalg.cond(matrix)
+print(k)
+
+x_arr = symbols('x1:25')
+x_arr = x_arr[0:n:1]
+
+func = 0
+for i in range(n):
+    func = func + x_arr[i] ** 2 * matrix.item(i, i)
+for i in range(n):
+    for j in range(i, n):
+        if i == j:
+            continue
+        func = func + 2 * x_arr[i] * x_arr[j] * matrix.item(i, j)
+g = lambda x_arr: func
+
+point = np.array([])
+for i in range(n):
+    point = np.append(point, int(1))
+
+print(func)
+print(gradient_descent4(g, x_arr, point, epsilon))
