@@ -151,11 +151,11 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
                 print("ABOBA")
                 for j in range(len(simplex_table[i])):
                     # Ищем базисную переменную, как часть, которая участвует в формировании единичной матрицы в заданной строке
-                    if simplex_table[i][j] == 1 and simplex_table[-1:, j] == 0 and simplex_table[:-1, j] == 0:
+                    if simplex_table[i][j] == 1 and sum([r[1] for r in simplex_table]):
                         print(simplex_table)
                         bases.append(f"x{i + 1 + len(maximize_func)}")
                     # Если у нас нет части единичной матрицы, но сверху и снизу всё ещё 0, то приведём к ней делением всей строки на данный коэффициент
-                    elif simplex_table[i][j] != 1 and simplex_table[i][j] != 0 and simplex_table[-1:, j] == 0 and simplex_table[:-1, j] == 0:
+                    elif simplex_table[i][j] != 1 and simplex_table[i][j] != 0 and sum([r[1] for r in simplex_table]):
                         simplex_table[i] = simplex_table[i] / simplex_table[i][j]
                         bases.append(f"x{i + 1 + len(maximize_func)}")
     else:
