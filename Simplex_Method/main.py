@@ -2,7 +2,8 @@
 import numpy as np
 import examples
 
-# Исходное допустимое базисное решение!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# Исходное допустимое базисное решение
 
 def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
                    num_of_x, limitation_symbol):
@@ -67,7 +68,6 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
             print(f" = {limitation_right_part[i]}")
     print()
 
-
     # Для определения знака нового x
     mark_of_x = {}
     # Вывести задание в каноническом виде (по необходимости, добавляем базисные x-ы)
@@ -111,8 +111,12 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
     #         for k in range(len(limitation_left_part[i])):
     #             basis_inequality[i][k] = -basis_inequality[i][k]
     # print("\nbasis_inequality:", basis_inequality, "\nNEXT\n")
+    build_first_simplex_table(limitation_symbol, limitation_left_part, limitation_right_part, mark_of_x,
+                              additional_x, num_of_x, maximize_func)
 
 
+def build_first_simplex_table(limitation_symbol, limitation_left_part, limitation_right_part, mark_of_x,
+                              additional_x, num_of_x, maximize_func):
     # Симплекс таблица (отдельная функция)
     print("\nFirts-Simplex-Table:")
     print("   ", end='')
@@ -143,19 +147,26 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
     if 0 in limitation_symbol:
         for i in range(len(simplex_table)):
             if limitation_symbol[i] == -1 or limitation_symbol[i] == 1:
-                bases.append(f"x{i + 1 + len(maximize_func)}")
+                # bases.append(f"x{i + 1 + len(maximize_func)}")
+                bases.append(i + 1 + len(maximize_func))
             else:
                 for j in range(len(simplex_table[i])):
                     # Ищем базисную переменную, как часть, которая участвует в формировании единичной матрицы в заданной строке
-                    if simplex_table[i][j] == 1 and sum([r[j] for r in simplex_table]) == 1 and False not in ([r[j] > 0 for r in simplex_table]):
+                    if simplex_table[i][j] == 1 and sum([r[j] for r in simplex_table]) == 1 and False not in (
+                            [r[j] > 0 for r in simplex_table]):
+                        # bases[j + 1] = f"x{j + 1}"
                         bases.append(f"x{j + 1}")
                         break
                     # Если у нас нет части единичной матрицы, но сверху и снизу всё ещё 0, то приведём к ней делением всей строки на данный коэффициент
-                    elif simplex_table[i][j] != 1 and simplex_table[i][j] != 0 and sum([r[j] for r in simplex_table]) == 1 and False not in ([r[j] > 0 for r in simplex_table]):
+                    elif simplex_table[i][j] != 1 and simplex_table[i][j] != 0 and sum(
+                            [r[j] for r in simplex_table]) == 1 and False not in (
+                            [r[j] > 0 for r in simplex_table]):
                         simplex_table[i] = simplex_table[i] / simplex_table[i][j]
-                        bases.append(f"x{j + 1}")
+                        # bases.append(f"x{j + 1}")
+                        bases.append(j + 1)
                         break
-                    elif simplex_table[i][j] != 0 and f"x{j + 1}" not in bases:
+                    elif simplex_table[i][j] != 0 and j + 1 not in bases:
+                        #???
                         # Поиск базисных переменных через метод исключающего Гаусса (если все предыдущие не сработали)
                         coef = simplex_table[i][j]
                         simplex_table[i] /= coef
@@ -163,7 +174,8 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
                             if k == i:
                                 continue
                             simplex_table[k] = simplex_table[k] - simplex_table[i] * simplex_table[k][j]
-                        bases.append(f"x{j + 1}")
+                        # bases.append(f"x{j + 1}")
+                        bases.append(j + 1)
                         break
                     # flag = 0
                     # for p in range(len(simplex_table)):
@@ -176,7 +188,8 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
     else:
         # Если у нас нет "=" и все базисные переменные уже установлены
         for i in range(len(maximize_func) + 1, additional_x + 1):
-            bases.append(f"x{i}")
+            # bases.append(f"x{i}")
+            bases.append(i)
     flag = 0
     for i in range(len(simplex_table)):
         for j in range(len(simplex_table[i]) - 1):
@@ -191,11 +204,60 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
         # for i in range(len(bases)):
         #     print(bases[i], end=' ')
         #     print(simplex_table[i])
-        print("END\n\n\n")
         # return bases, simplex_table
 
-    # Правая часть не может быть отрицательной!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # Избавляемся от отрицательности в правой части
+        min_num_line = 0
+        min_num_line_i = 0
+        min_num_column = 0
+        min_num_column_j = 0
+        arr_of_b = np.array([])
 
-    # Поиск ответа в таблице при помощи исключающего метода Гаусса!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        for i in range(len(simplex_table)):
+            arr_of_b = np.append(arr_of_b, simplex_table[i][len(simplex_table[i]) - 1])
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", arr_of_b)
+
+        if sum(arr_of_b) != sum(abs(-arr_of_b)):
+            while sum(arr_of_b) != sum(abs(-arr_of_b)):
+                for i in range(len(simplex_table)):
+                    if simplex_table[i][len(simplex_table[i]) - 1] < min_num_line:
+                        min_num_line = simplex_table[i][len(simplex_table[i]) - 1]
+                        min_num_line_i = i
+                        continue
+                for j in range(len(simplex_table[min_num_line_i]) - 1):
+                    if simplex_table[min_num_line_i][j] < min_num_column:
+                        min_num_column = simplex_table[min_num_line_i][j]
+                        min_num_column_j = j
+
+                arr_of_b[min_num_line_i] /= simplex_table[min_num_line_i][min_num_column_j]
+                simplex_table[min_num_line_i] /= simplex_table[min_num_line_i][min_num_column_j]
+                bases[min_num_line_i] = min_num_column_j + 1
+
+                for i in range(len(simplex_table)):
+                    if i == min_num_line_i:
+                        continue
+                    simplex_table[i] = simplex_table[i] - simplex_table[min_num_line_i] * simplex_table[i][min_num_column_j]
+            print("\nSimplex Table with Fixed Right Part: ")
+            print("   ", end='')
+            for i in range(additional_x + 1):
+                if (i < len(maximize_func)):
+                    print(maximize_func[i], end='  ')
+                else:
+                    print(0, end='  ')
+            print("  C")
+            print("   ", end='')
+            for i in range(1, additional_x + 2):
+                if i < additional_x + 1:
+                    print(f"x{i}", end='  ')
+                else:
+                    print("b", end=' ')
+            print("  basis")
+            print(simplex_table)
+            print(bases)
+            print("END\n\n\n")
 
 
+
+    deltas = np.zeros((len(simplex_table[0])), dtype=float)
+    for i in (range(len(simplex_table[0]) - len(maximize_func))):
+        maximize_func.append(0)
