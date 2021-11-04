@@ -6,7 +6,7 @@ import examples
 # Исходное допустимое базисное решение
 
 def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
-                   num_of_x, limitation_symbol):
+                   num_of_x, limitation_symbol, max_or_min):
     # Добавляемый x
     additional_x = 0
     for i in range(len((num_of_x))):
@@ -15,13 +15,13 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
                 additional_x = num_of_x[i][j]
 
     # Вывести задание
-    print("Function:")
+    print("FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:")
     print("F = ", end='')
     for i in range(len(maximize_func)):
         print(f"{maximize_func[i]}x{i + 1}", end='')
         if i != len(maximize_func) - 1:
             print(" + ", end='')
-    print(" -> min\n")
+    print(f" -> {max_or_min}\n")
 
     print("Limitations:")
     for i in range(len(limitation_left_part)):
@@ -112,11 +112,12 @@ def simplex_method(maximize_func, limitation_left_part, limitation_right_part,
     #             basis_inequality[i][k] = -basis_inequality[i][k]
     # print("\nbasis_inequality:", basis_inequality, "\nNEXT\n")
     build_first_simplex_table(limitation_symbol, limitation_left_part, limitation_right_part, mark_of_x,
-                              additional_x, num_of_x, maximize_func)
+                              additional_x, num_of_x, maximize_func, max_or_min)
 
 
 def build_first_simplex_table(limitation_symbol, limitation_left_part, limitation_right_part, mark_of_x,
-                              additional_x, num_of_x, maximize_func):
+                              additional_x, num_of_x, maximize_func, max_or_min):
+    len_of_maximize_func = len(maximize_func)
     # Симплекс таблица (отдельная функция)
     print("\nFirts-Simplex-Table:")
     print("   ", end='')
@@ -166,7 +167,7 @@ def build_first_simplex_table(limitation_symbol, limitation_left_part, limitatio
                         bases.append(j + 1)
                         break
                     elif simplex_table[i][j] != 0 and j + 1 not in bases:
-                        #???
+                        # ???
                         # Поиск базисных переменных через метод исключающего Гаусса (если все предыдущие не сработали)
                         coef = simplex_table[i][j]
                         simplex_table[i] /= coef
@@ -196,11 +197,11 @@ def build_first_simplex_table(limitation_symbol, limitation_left_part, limitatio
             if simplex_table[i][j] != 1 and simplex_table[i][j] != 0:
                 flag += 1
     print(simplex_table)
+    print("\n\n\n")
     if flag == 0 or len(bases) == 0:
         print("No Solution\n\n\n")
         # return "No Solution"
     else:
-        print("bases:", bases)
         # for i in range(len(bases)):
         #     print(bases[i], end=' ')
         #     print(simplex_table[i])
@@ -231,93 +232,221 @@ def build_first_simplex_table(limitation_symbol, limitation_left_part, limitatio
                 arr_of_b[min_num_line_i] /= simplex_table[min_num_line_i][min_num_column_j]
                 simplex_table[min_num_line_i] /= simplex_table[min_num_line_i][min_num_column_j]
                 bases[min_num_line_i] = min_num_column_j + 1
-                print(min_num_line_i)
 
                 for i in range(len(simplex_table)):
                     if i == min_num_line_i:
                         continue
-                    simplex_table[i] = simplex_table[i] - simplex_table[min_num_line_i] * simplex_table[i][min_num_column_j]
+                    simplex_table[i] = simplex_table[i] - simplex_table[min_num_line_i] * simplex_table[i][
+                        min_num_column_j]
 
             last_check = False
-            print(simplex_table)
+            no_solution = False
             for i in range(len(simplex_table)):
-                if last_check == True:
-                    print("There is Solution")
-                    print("\nSimplex Table with Fixed Right Part: ")
-                    print("   ", end='')
-                    for i in range(additional_x + 1):
-                        if (i < len(maximize_func)):
-                            print(maximize_func[i], end='  ')
-                        else:
-                            print(0, end='  ')
-                    print("  C")
-                    print("   ", end='')
-                    for i in range(1, additional_x + 2):
-                        if i < additional_x + 1:
-                            print(f"x{i}", end='  ')
-                        else:
-                            print("b", end=' ')
-                    print("  basis")
-                    print(simplex_table)
-                    print(bases)
-                    print("END\n\n\n")
-                    break
-                else:
-                    print("No Solution")
-                for j in range(len(simplex_table[i]) - 2):
-                    if simplex_table[i][len(simplex_table[i]) - 1]:
+                if simplex_table[i][len(simplex_table[i]) - 1] < 0:
+                    for j in range(len(simplex_table[i]) - 2):
                         if simplex_table[i][j] < 0:
                             last_check = True
                             break
-                if last_check:
-                    break
+                    if last_check:
+                        print("There is Solution")
+                        break
+                    else:
+                        print(simplex_table)
+                        print("No Solution\n\n\n")
+                        no_solution = True
+                        break
+
+            if not no_solution:
+                print("\nSimplex Table with Fixed Right Part: ")
+                print("   ", end='')
+                for i in range(additional_x + 1):
+                    if (i < len(maximize_func)):
+                        print(maximize_func[i], end='  ')
+                    else:
+                        print(0, end='  ')
+                print("  C")
+                print("   ", end='')
+                for i in range(1, additional_x + 2):
+                    if i < additional_x + 1:
+                        print(f"x{i}", end='  ')
+                    else:
+                        print("b", end=' ')
+                print("  basis")
+                print(simplex_table)
+                print(bases)
+                print("END\n\n\n")
+
+    # if flag != 0 and len(bases) != 0:
+        for i in range(len(simplex_table)):
+            for j in range(len(simplex_table[i])):
+                if simplex_table[i][j] == -0:
+                    simplex_table[i][j] = 0
+
+        # Рассчёт Дельта
+        deltas = np.zeros((len(simplex_table[0])), dtype=float)
+        for i in (range(len(simplex_table[0]) - len(maximize_func))):
+            maximize_func.append(0)
+        print("maximize_func: ", maximize_func)
+        print("bases: ", bases)
+
+        # maximize_func_minus_one = np.array(maximize_func) - 1
+        # for i in range(len(maximize_func_minus_one)):
+        #     if maximize_func_minus_one[i] < 0:
+        #         maximize_func_minus_one[i] = 0
+        # print("maximize_func_minus_one: ", maximize_func_minus_one)
+
+        i = 0
+        for b in bases:
+            for j in range(len(simplex_table[0])):
+                deltas[j] += maximize_func[b - 1] * simplex_table[i][j]
+            i += 1
+        for i in range(len(maximize_func)):
+            deltas[i] -= maximize_func[i]
+        print("deltas:", deltas)
+
+        # answers = np.array([[]])
+        # for i in range(len(simplex_table) - 1):
+        #     print(len(simplex_table) - 1)
+        #     answers = np.append(answers, simplex_table[i][len(simplex_table[0]) - 1])
+        # answers_dict = np.array([bases, answers])
+        #     print(answers)
+        #     print(bases)
+        plan = False
+        while plan != True:
+            if max_or_min == "min":
+                optimality = "-"
+                for i in range(len(deltas) - 1):
+                    if deltas[i] > 0:
+                        optimality = "+"
+                if optimality == "+":
+                    print("Plan is not optimal")
+                    flag = 0
+                    Q = np.array([])
+                    max_point = np.max(deltas)
+                    index_column, = np.where(deltas == max_point)
+                    for i in range(len(simplex_table)):
+                        # print(i)
+                        # print(simplex_table[i][index])
+                        if simplex_table[i][index_column] < 0:
+                            flag += 1
+                            Q = np.append(Q, "null")
+                        else:
+                            Q = np.append(Q, simplex_table[i][len(simplex_table[0]) - 1] / simplex_table[i][index_column])
+                    if flag == len(simplex_table):
+                        print("No Solution")
+                    else:
+                        min_point = min(Q)
+                        index_line, = np.where(Q == min_point)
+                        coef = simplex_table[index_line[0]][index_column[0]]
+                        simplex_table[index_line[index_line]] /= coef
+                        print(simplex_table)
+                        for i in range(len(simplex_table)):
+                            if i == index_line:
+                                continue
+                            simplex_table[i] = simplex_table[i] - simplex_table[index_line[0]] * simplex_table[i][index_column]
+                        bases[index_line[0]] = index_column[0] + 1
+
+                        deltas.fill(0)
+                        print(deltas)
+                        # new Deltas
+                        i = 0
+                        for b in bases:
+                            for j in range(len(simplex_table[0])):
+                                deltas[j] += maximize_func[b - 1] * simplex_table[i][j]
+                            i += 1
+                        for i in range(len(maximize_func)):
+                            deltas[i] -= maximize_func[i]
+                        print("deltas:", deltas)
 
 
+                        # find_the_answer(simplex_table, bases, maximize_func, max_or_min, deltas)
+                else:
+                    print("Plan is optimal")
+                    plan = True
+                    for i in range(1, len_of_maximize_func + 1):
+                        if i in bases:
+                            print(f"x{i}: {simplex_table[bases.index(i)][len(simplex_table[0]) - 1]}")
+                        else:
+                            print(f"x{i}: {0}")
+                    print("F:", deltas[len(deltas) - 1])
 
-            # if last_check == False:
-        # print("\nSimplex Table with Fixed Right Part: ")
-        # print("   ", end='')
-        # for i in range(additional_x + 1):
-        #     if (i < len(maximize_func)):
-        #         print(maximize_func[i], end='  ')
-        #     else:
-        #         print(0, end='  ')
-        # print("  C")
-        # print("   ", end='')
-        # for i in range(1, additional_x + 2):
-        #     if i < additional_x + 1:
-        #         print(f"x{i}", end='  ')
-        #     else:
-        #         print("b", end=' ')
-        # print("  basis")
-        # print(simplex_table)
-        # print(bases)
-        # print("END\n\n\n")
+            # while():
+            elif max_or_min == "max":
+                optimality = "+"
+                for i in range(len(deltas) - 1):
+                    if deltas[i] < 0:
+                        optimality = "-"
+                if optimality == "-":
+                    print("Plan is not optimal")
+                    flag = 0
+                    Q = np.array([])
+                    min_point = np.min(deltas)
+                    index_column, = np.where(deltas == min_point)
+                    for i in range(len(simplex_table)):
+                        # print(i)
+                        # print(simplex_table[i][index])
+                        if simplex_table[i][index_column] < 0:
+                            flag += 1
+                            Q = np.append(Q, "null")
+                        else:
+                            Q = np.append(Q,
+                                          simplex_table[i][len(simplex_table[0]) - 1] / simplex_table[i][index_column])
+                    if flag == len(simplex_table):
+                        print("No Solution")
+                    else:
+                        min_point_Q = min(Q)
+                        index_line, = np.where(Q == min_point_Q)
+                        coef = simplex_table[index_line[0]][index_column[0]]
+                        simplex_table[index_line[index_line]] /= coef
+                        print(simplex_table)
+                        for i in range(len(simplex_table)):
+                            if i == index_line:
+                                continue
+                            simplex_table[i] = simplex_table[i] - simplex_table[index_line[0]] * simplex_table[i][
+                                index_column]
+                        bases[index_line[0]] = index_column[0] + 1
 
+                        deltas.fill(0)
+                        print(deltas)
+                        i = 0
+                        for b in bases:
+                            for j in range(len(simplex_table[0])):
+                                deltas[j] += maximize_func[b - 1] * simplex_table[i][j]
+                            i += 1
+                        for i in range(len(maximize_func)):
+                            deltas[i] -= maximize_func[i]
+                        print("deltas:", deltas)
+                    # find_the_answer(simplex_table, bases, maximize_func, max_or_min, deltas)
+                else:
+                    print("Plan is optimal")
+                    plan = True
+                    for i in range(1, len_of_maximize_func + 1):
+                        if i in bases:
+                            print(f"x{i}: {simplex_table[bases.index(i)][len(simplex_table[0]) - 1]}")
+                        else:
+                            print(f"x{i}: {0}")
+                    print("F:", deltas[len(deltas) - 1])
 
+def find_the_answer(simplex_table, bases, maximize_func, max_or_min, deltas):
+    pass
 
-    deltas = np.zeros((len(simplex_table[0])), dtype=float)
-    for i in (range(len(simplex_table[0]) - len(maximize_func))):
-        maximize_func.append(0)
-    # print(maximize_func)
+    # print("\nSimplex Table with Fixed Right Part: ")
+    # print("   ", end='')
+    # for i in range(additional_x + 1):
+    #     if (i < len(maximize_func)):
+    #         print(maximize_func[i], end='  ')
+    #     else:
+    #         print(0, end='  ')
+    # print("  C")
+    # print("   ", end='')
+    # for i in range(1, additional_x + 2):
+    #     if i < additional_x + 1:
+    #         print(f"x{i}", end='  ')
+    #     else:
+    #         print("b", end=' ')
+    # print("  basis")
+    # print(simplex_table)
     # print(bases)
-    # print(deltas)
+    # print("END\n\n\n")
 
 
-    #     print(maximize_func[b])
-        # for j in range(len(simplex_table[0])):
-        #     deltas[i] += maximize_func[b] * simplex_table[i][j]
-        #     continue
-        # deltas[i] -= maximize_func[i]
-        # i += 1
-        # b = 0
-        # for i in range(len(simplex_table[0])):
-        #     for j in range(simplex_table):
-        #         deltas[i] += maximize_func[bases[b]] * simplex_table[j][i]
-        #     deltas[i] -= maximize_func[i]
-        #     b += 1
-        #     if (b == len(bases)):
-        #         break
-    # def find_the_answer():
-    #     pass
-        # Поиск ответа в таблице при помощи исключающего метода Гаусса
