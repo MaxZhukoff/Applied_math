@@ -1,14 +1,6 @@
-import random
 import matplotlib.pyplot as plt
 
 import numpy as np
-
-# number = round(random.random(), 1)
-# print(number)
-
-# matrix = [[1 / 4, 0, 3 / 4],
-#           [1 / 2, 0, 1 / 2],
-          # [1 / 4, 1 / 2, 1 / 4]]
 
 matrix = np.array([[0.4, 0.2, 0.4, 0, 0, 0, 0, 0],
                   [0.1, 0.6, 0.3, 0, 0, 0, 0, 0],
@@ -19,201 +11,49 @@ matrix = np.array([[0.4, 0.2, 0.4, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0.2, 0, 0.2, 0.6, 0],
                   [0, 0, 0, 0.4, 0, 0, 0, 0.6]])
 
-# matrix = np.array([[0.3, 0.4, 0.1, 0.2],
-#                    [0, 0.2, 0.5, 0.3],
-#                    [0, 0, 0.4, 0.6],
-#                    [0, 0, 0, 1]])
+print(matrix)
 
-experiment = [[0], [0], [0], [0],
-              [0], [0], [0], [0]]
-
-# vector = np.array([1, 0, 0, 0])
 vector = np.array([1, 0, 0, 0, 0, 0, 0, 0])
-# vector = np.array([0.2, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.1])
 
 choice_id = []
 choice = []
 
-print("Matrix:")
-for i in range(len(matrix)):
-    for j in range(len(matrix[i])):
-        print(matrix[i][j], ' ', end="")
-    print()
-print()
-
-
-# Матрица на вектор
 power = 1
 stop = 0
 comparsion = np.array([[vector]])
 rms = 0
 
-rmss = []
-# while rms != 0.06673028136969715:
 vectors = []
 while stop != 100:
     powered_matrix = np.linalg.matrix_power(matrix, power)
     print(f"POWER {power}:\n", powered_matrix)
     vector = vector.dot(powered_matrix)
     print("VECTOR:\n", vector)
-    power += 1
-    stop += 1
     comparsion = np.append(comparsion, [[vector]], axis=0)
     print("Comparsion before:", comparsion)
-    # root mean square of vector
     rms = np.std(comparsion)
-    print("RMS:\n", rms)
     comparsion[0] = comparsion[1]
     comparsion = np.delete(comparsion, 0, axis=0)
     print("Comparsion after:", comparsion)
-    # plt.plot(vector)
-    # plt.show()
-    print("\n\n\n", stop, "\n\n\n")
-    # rmss.append(rms)
-
+    print("RMS:\n", rms)
+    print("\n", stop, "\n")
+    power += 1
+    stop += 1
     vectors.append(vector[0])
-# print(vectors)
-# hundred = list(range(1, 101))
 
-# plt.plot(vectors, hundred)
-# plt.show()
+print(vectors)
+hundred = list(range(1, 101))
 
-# # quantity of steps
-# stop = 0
-# # beginning with 3 (4 - 1):
-# i = 3
-# while stop != 1000:
-#     stop += 1
-#     for j in range(len(matrix[i])):
-#         choice.append(matrix[i][j])
-#         choice_id.append(j)
-#
-#     the_lucky_one = random.choices(choice_id, weights=choice)
-#     # print(f"from {i} to {the_lucky_one[0] - 1}")
-#     print(f"from {i} to {the_lucky_one[0]}")
-#     print("The_lucky_one:", the_lucky_one[0])
-#     print("The_lucky_one meaning:", choice[choice_id.index(the_lucky_one[0])])
-#     print("Choice:", choice)
-#     print()
-#     choice = []
-#     choice_id = []
-#     experiment[i][0] += 1
-#     i = the_lucky_one[0]
-#
-# print("Experiment:", experiment)
+plt.plot(vectors, hundred)
+plt.show()
 
-
-
-
-
-
-
-# matrix = np.array([[0.4, 0.2, 0.4, 0, 0, 0, 0, 0],
-#                   [0.1, 0.6, 0.3, 0, 0, 0, 0, 0],
-#                   [0, 0, 0.2, 0.5, 0, 0.3, 0, 0],
-#                   [0, 0.3, 0, 0.3, 0.1, 0, 0.2, 0.1],
-#                   [0, 0, 0, 0, 0.8, 0, 0.2, 0],
-#                   [0, 0, 0.3, 0, 0, 0.4, 0.3, 0],
-#                   [0, 0, 0, 0.2, 0, 0.2, 0.6, 0],
-#                   [0, 0, 0, 0.4, 0, 0, 0, 0.6]])
-
-# matrix = np.array([[-0.6, 0.2, 0.4, 0, 0, 0, 0, 0],
-#                   [0.1, -0.4, 0.3, 0, 0, 0, 0, 0],
-#                   [0, 0, -0.8, 0.5, 0, 0.3, 0, 0],
-#                   [0, 0.3, 0, -0.7, 0.1, 0, 0.2, 0.1],
-#                   [0, 0, 0, 0, -0.2, 0, 0.2, 0],
-#                   [0, 0, 0.3, 0, 0, -0.6, 0.3, 0],
-#                   [0, 0, 0, 0.2, 0, 0.2, -0.4, 0],
-#                   [0, 0, 0, 0.4, 0, 0, 0, -0.4]])
-
-# matrix = np.array([[-0.6, 0.1, 0, 0, 0, 0, 0, 0],
-#                   [0.2, -0.4, 0, 0.3, 0, 0, 0, 0],
-#                   [0.4, 0.3, -0.8, 0, 0, 0.3, 0, 0],
-#                   [0, 0, 0.5, -0.7, 0, 0, 0.2, 0.4],
-#                   [0, 0, 0, 0.1, -0.2, 0, 0, 0],
-#                   [0, 0, 0.3, 0, 0, -0.6, 0.2, 0],
-#                   [0, 0, 0, 0.2, 0.2, 0.3, -0.4, 0],
-#                   [0, 0, 0, 0.1, 0, 0, 0, -0.4]])
-
-# matrix = np.array([[-0.6, 0.2, 0.4, 0, 0, 0, 0, 0],
-#                   [0.1, -0.4, 0.3, 0, 0, 0, 0, 0],
-#                   [0, 0, -0.8, 0.5, 0, 0.3, 0, 0],
-#                   [0, 0.3, 0, -0.7, 0.1, 0, 0.2, 0.1],
-#                   [0, 0, 0, 0, -0.2, 0, 0.2, 0],
-#                   [0, 0, 0.3, 0, 0, -0.6, 0.3, 0],
-#                   [0, 0, 0, 0.2, 0, 0.2, -0.4, 0],
-#                   [1, 1, 1, 1, 1, 1, 1, 1]])
-
-
-matrix = np.array([[-0.6, 0.2, 0.4, 0, 0, 0, 0, 0],
-                  [0.1, -0.4, 0.3, 0, 0, 0, 0, 0],
-                  [0, 0, -0.8, 0.5, 0, 0.3, 0, 0],
-                  [0, 0.3, 0, -0.7, 0.1, 0, 0.2, 0.1],
-                  [0, 0, 0, 0, -0.2, 0, 0.2, 0],
-                  [0, 0, 0.3, 0, 0, -0.6, 0.3, 0],
-                  [0, 0, 0, 0.2, 0, 0.2, -0.4, 0],
-                  [1, 1, 1, 1, 1, 1, 1, 1]])
-
-# matrix = matrix.transpose()
-# matrix = matrix
-# matrix_ones = (8)
-# matrix_ones = np.ones(matrix_ones)
-# matrix = matrix - matrix_ones
-# print(matrix)
-
+# Аналитическое решение
+matrix = matrix.transpose()
+matrix -= np.eye(8)
+matrix[7] = np.ones(8)
 result = np.linalg.solve(matrix, [0, 0, 0, 0, 0, 0, 0, 1])
-print(result)
+
+print("\nAnalytics solution:", result)
 
 
 
-
-# Матрица в степени
-# a = np.array([[1, 3], [2, 1]])
-# result = np.linalg.matrix_power(a, 2)
-# print(result)
-
-# # Умножение матриц
-# matrix = np.array([[1 / 4, 0, 3 / 4],
-#                    [1 / 2, 0, 1 / 2],
-#                    [1 / 4, 1 / 2, 1 / 4]])
-# dot_result = matrix.dot(matrix)
-# print(dot_result)
-#
-# # Матрица на вектор
-# a = np.array([[2, 1],
-#               [2, 2],
-#               [4, 3]])
-# b = np.array([[1], [3]])
-# total = a.dot(b)
-# print(total)
-#
-# # Матрица в степени
-# a = np.array([[1, 3], [2, 1]])
-# result = np.linalg.matrix_power(a, 2)
-# print(result)
-#
-# # Решение СЛУ
-# a = np.array([[1, 2], [3, 2]])
-# b = np.array([5, 6])
-# result = np.linalg.solve(a, b)
-# print(result)
-
-
-
-        # if round(random.random()) in np.round(np.arange(0, matrix[i][j], 0.01), 2):
-        #     print("aboba")
-
-        # print(matrix[i][j])
-
-# for i in np.round(np.arange(0, 1, 0.01), 2):
-#     print(i)
-
-# print(range(0, 4))
-
-
-# print(matrix)
-# print(round(0.25, 1))
-
-# arr = np.array([[1]])
-# arr = np.append(arr, [[2]], axis=0)
-# print(arr)
